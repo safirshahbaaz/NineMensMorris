@@ -173,16 +173,16 @@ public class NineMensMorrisLogic {
 	}
 	
 	/* Generate Moves for Opening Phase for White */
-	public static ArrayList<NineMensMorris> generateOpeningMoves(NineMensMorris mb){
+	public static ArrayList<NineMensMorris> addPiecesForOpeningMoves(NineMensMorris mb){
 		return addPieces(mb);
 	}
 	
 	/* Generate Moves for Opening Phase for Black */
-	public static ArrayList<NineMensMorris> generateOpeningMovesBlack(NineMensMorris mb){
+	public static ArrayList<NineMensMorris> addPiecesForOpeningMovesBlack(NineMensMorris mb){
 		/* Get Inverted version of the board for Black */
 		NineMensMorris boardBlack = mb.getInvertedBoard();
 		
-		ArrayList<NineMensMorris> listPositionsBlack = generateOpeningMoves(boardBlack);
+		ArrayList<NineMensMorris> listPositionsBlack = addPiecesForOpeningMoves(boardBlack);
 		
 		/* Possible Moves for Black */
 		ArrayList<NineMensMorris> possibleMovesBlack = generateInvertedBoardList(listPositionsBlack);
@@ -221,4 +221,61 @@ public class NineMensMorrisLogic {
 		return listPositionsBlack;
 	}
 	
+	/*  */
+	public static int getPossibleMillCount(NineMensMorris board, PositionValue value){
+		int millCount = 0;
+		
+		for(int iter = 0; iter < board.boardPositions.size(); iter++){
+			
+			if(board.getValueAtPosition(iter) == PositionValue.X){
+				
+				if(checkMillFormation(iter, board, value)){
+					millCount++;
+				}
+			}
+		}
+		return millCount;
+	}
+	
+	/* Evaluation Function for the 1st phase of the game.
+	 * Number of White Pieces - Number of Black Pieces + Number of Mills Possible */
+	public static int getEvaluationForOpeningPhase(NineMensMorris board){
+		int numWhitePieces = board.getNumberOfPieces(PositionValue.W); 
+		int numBlackPieces = board.getNumberOfPieces(PositionValue.B);
+		int numPossibleMills = getPossibleMillCount(board, PositionValue.W);
+		
+		return numWhitePieces - numBlackPieces + numPossibleMills;
+	}
+	
+	/* Evaluation Function for the 2nd and final phase of the game. */
+	public static int getEvaluationForMidGameAndEndGame(NineMensMorris board){
+
+		int numWhitePieces = board.getNumberOfPieces(PositionValue.W); 
+		int numBlackPieces = board.getNumberOfPieces(PositionValue.B);
+		int numPossibleMills = getPossibleMillCount(board, PositionValue.W);
+		int numBlackMoves;
+		int evaluationValue = 0;
+		
+		ArrayList<NineMensMorris> boardList = addPiecesforMidgameAndEndGame(board);
+		
+		 numBlackMoves = boardList.size();
+		
+		/* Game is won if the number of black pieces is less than 3 */ 
+		if(numBlackPieces <= 2){
+			evaluationValue = 10000;
+		}
+		/* Game is won if all Black pieces are blocked */
+		else if (numBlackMoves == 0){
+			evaluationValue = 10000;
+		}
+		/* Game is lost if number of white pieces is less than 3 */
+		else if(numWhitePieces <= 2){
+			evaluationValue = -10000;
+		}
+		/* Game still in progress */
+		else{
+			evaluationValue = (1000 * (numWhitePieces + numPossibleMills - numBlackPieces) - numBlackMoves);
+		}
+		return evaluationValue;	
+	}
 }

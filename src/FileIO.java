@@ -33,16 +33,16 @@ public class FileIO {
 	}
 	
 	/* Write the results of computation to the result file */
-	public static void WriteOutputInFile(String file, Estimation estimate) {
+	public static void WriteOutputInFile(String file, Evaluation evaluation) {
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 
 			BufferedWriter buffer = new BufferedWriter(fileWriter);
 
 			/* Write the output to file */
-			buffer.write(NineMensMorris.BOARD_POSITION + estimate.getNineMensMorrisBoard());
-			buffer.write("\n" + NineMensMorris.POSITION_EVALUATED + estimate.getPositionsEvaluated());
-			buffer.write("\n" + NineMensMorris.MINIMAX_ESTIMATE + estimate.getEstimate());
+			buffer.write(NineMensMorris.BOARD_POSITION + evaluation.getNineMensMorrisBoard());
+			buffer.write("\n" + NineMensMorris.POSITION_EVALUATED + evaluation.getPositionsEvaluated());
+			buffer.write("\n" + NineMensMorris.MINIMAX_ESTIMATE + evaluation.getEvaluation());
 			
 			buffer.close();
 		} 
