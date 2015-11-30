@@ -34,13 +34,18 @@ public class GameMain {
 		
 		/* Begin the game with the opening phase with 9 moves for each player */
 		for(int iter = 1; iter <= 9; iter++){
+			
 			/* Take input from the user and display the board */
+			printBoard(board);
+			
 			if(NineMensMorrisLogic.getEvaluationForOpeningPhase(board) == 10000){
 				/* Human Wins! */
 				System.out.println("You Win!!");
 				System.exit(0);
 			}
 			/* AI's turn */
+			printBoard(board);
+			
 			evalBoard = AlphaBeta.alphaBetaPruningAlgorithm(board, depth, false, alpha, beta, true);
 			if(evalBoard.getEvaluation() == -10000){
 				/* AI Wins! */
