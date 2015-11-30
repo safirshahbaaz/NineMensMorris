@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class NineMensMorrisLogic {
 	
 	/* Get array of neighbors for the given position */
-	public static ArrayList<Integer> neighbors(int position) {
+	public static ArrayList<Integer> adjacentLocations(int position) {
 		ArrayList<Integer> neighbors = new ArrayList<Integer>();
 		
 		switch(position) {
@@ -121,6 +121,42 @@ public class NineMensMorrisLogic {
 		return boardList;
 	}
 	
+	/* Add pieces to the board on only adjacent positions as 
+	 * Mid game phase requires */
+	public static ArrayList<NineMensMorris> addPiecesForMidgame(NineMensMorris board) 
+	{
+		ArrayList<NineMensMorris> boardList = new ArrayList<NineMensMorris>();
+		
+		for (int iter = 0; iter < board.boardPositions.size(); iter++) {
+			
+			if (board.getValueAtPosition(iter) == PositionValue.W) {
+				
+				/* Get the adjacent locations for the current position */
+				ArrayList<Integer> adjLocations = adjacentLocations(iter);
+				
+				for (Integer loc : adjLocations) {
+					
+					/* Place the piece at an empty location if found */
+					if (board.getValueAtPosition(loc) == PositionValue.X){
+						
+						NineMensMorris boardCopy = board.getBoardCopy();
+						
+						boardCopy.setPositionValue(PositionValue.X, iter);
+						boardCopy.setPositionValue(PositionValue.W, loc);
+						
+						if (isCloseMill(loc, boardCopy)) {
+							boardList = removePiece(boardCopy, boardList);
+						} 
+						else {
+							boardList.add(boardCopy);
+						}
+					}
+				}
+			}
+		}
+		return boardList;
+	}
+	
 	/* Remove piece if a Mill has formed */
 	public static ArrayList<NineMensMorris> removePiece(NineMensMorris boardCopy, ArrayList<NineMensMorris> boardList) {
 		for (int iter = 0; iter < boardCopy.boardPositions.size(); iter++) 
@@ -141,16 +177,15 @@ public class NineMensMorrisLogic {
 	
 	/* Create moves for the end game where restrictions of adjacency are removed */
 	public static ArrayList<NineMensMorris> addPiecesForHopping(NineMensMorris mb){
-		int i, j;
 		ArrayList<NineMensMorris> boardList = new ArrayList<NineMensMorris>();
 
 		/* for every location (i) - alpha in the board */
-		for (i = 0; i < mb.boardPositions.size(); i++) {
+		for (int i = 0; i < mb.boardPositions.size(); i++) {
 			/* Find a position with piece W */
 			if (mb.getValueAtPosition(i) == PositionValue.W) {
 				
 				/* For every position on the board that is empty*/
-				for (j = 0; j < mb.boardPositions.size(); j++) {
+				for (int j = 0; j < mb.boardPositions.size(); j++) {
 					
 					if (mb.getValueAtPosition(j) == PositionValue.X) {
 						NineMensMorris boardCopy = mb.getBoardCopy();
@@ -198,7 +233,7 @@ public class NineMensMorrisLogic {
 		} 
 		/* Game is in the second phase */
 		else{
-			return addPieces(mb);
+			return addPiecesForMidgame(mb);
 		}
 	}
 	
