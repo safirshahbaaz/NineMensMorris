@@ -90,7 +90,7 @@ public class FileIO {
 				String charPosition = userInput.next();
 				int n = Integer.parseInt(charPosition);
 				PositionValue p= obj.getValueAtPosition(n);
-				if (p == PositionValue.B && !NineMensMorrisLogic.isCloseMill(n, obj)){
+				if (p == PositionValue.B && !NineMensMorrisLogic.isCloseMill(n, obj) || (NineMensMorrisLogic.isCloseMill(n, obj) && obj.getNumberOfPieces(p) == 3)){
 					obj.setPositionValue(PositionValue.X,n);	
 					return true;
 				}

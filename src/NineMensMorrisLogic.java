@@ -327,6 +327,35 @@ public class NineMensMorrisLogic {
 		return value;
 	}
 	
+	/*public static int getPiecesInPotentialMillFormation(NineMensMorris board, PositionValue p){
+		int count = 0;
+		
+		for(int iter = 0; iter < board.boardPositions.size(); iter++){
+			
+			if(board.getValueAtPosition(iter) == p){
+				
+				/* Get the adjacent locations for the current position */
+				/*ArrayList<Integer> adjLocations = adjacentLocations(iter);
+				
+				for (Integer loc : adjLocations) {
+					
+					/* Check if there are 2 pieces in adjacent locations but not in a mill */
+					/*if(p == PositionValue.W){
+						if (board.getValueAtPosition(loc) == PositionValue.B && potentialMillInFormation(loc, board, PositionValue.B)){
+							count++;
+						}
+					}
+					else{
+						if (board.getValueAtPosition(loc) == PositionValue.W && potentialMillInFormation(loc, board, PositionValue.W)){
+							count++;
+						}
+					}
+				}
+			}
+		}
+		return count;
+	}*/
+	
 	public static int getPiecesInPotentialMillFormation(NineMensMorris board, PositionValue p){
 		int count = 0;
 		
@@ -341,8 +370,13 @@ public class NineMensMorrisLogic {
 					
 					/* Check if there are 2 pieces in adjacent locations but not in a mill */
 					if(p == PositionValue.W){
-						if (board.getValueAtPosition(loc) == PositionValue.B && potentialMillInFormation(loc, board, PositionValue.B)){
-							count++;
+						if (board.getValueAtPosition(loc) == PositionValue.B){
+							board.setPositionValue(PositionValue.B, iter);
+							if(isCloseMill(iter, board)){
+								//System.out.println("Mill formed");
+								count++;
+							}
+							board.setPositionValue(p, iter);
 						}
 					}
 					else{
@@ -379,22 +413,46 @@ public class NineMensMorrisLogic {
 		int potentialMillsWhite = getPiecesInPotentialMillFormation(board, PositionValue.W);
 		int potentialMillsBlack = getPiecesInPotentialMillFormation(board, PositionValue.B);
 		
-		if(numBlackPieces <= 2){
-			evaluationValue = 100000;
-		}
-		/* Game is won if all Black pieces are blocked */
-		else if (movablePiecesBlack == 0){
-			evaluationValue = 100000;
-		}
-		/* Game is lost if number of white pieces is less than 3 */
-		else if(numWhitePieces <= 2){
-			evaluationValue = -100000;
+		if(!isOpeningPhase){
+			if(numBlackPieces <= 2){
+				evaluationValue = 100000;
+			}
+			/* Game is won if all Black pieces are blocked */
+			else if (movablePiecesBlack == 0){
+				evaluationValue = 100000;
+			}
+			/* Game is lost if number of white pieces is less than 3 */
+			else if(numWhitePieces <= 2){
+				evaluationValue = -100000;
+			}
+			else{
+				evaluationValue = 100 * (numWhitePieces - numBlackPieces);
+				if(numWhitePieces < 4){
+					evaluationValue += 500 * (numPossibleMillsWhite);
+					evaluationValue += 1000 * potentialMillsWhite;
+				}
+				else{
+					evaluationValue += 1000 * (numPossibleMillsWhite);
+					evaluationValue += 500 * potentialMillsWhite;
+				}
+				//evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
+				evaluationValue -= 10 * movablePiecesBlack;
+				//evaluationValue += 500 * potentialMillsWhite;
+			}
 		}
 		else{
 			evaluationValue = 100 * (numWhitePieces - numBlackPieces);
-			evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
+			if(numWhitePieces < 4){
+				evaluationValue += 500 * (numPossibleMillsWhite);
+				evaluationValue += 1000 * potentialMillsWhite;
+			}
+			else{
+				evaluationValue += 1000 * (numPossibleMillsWhite);
+				evaluationValue += 500 * potentialMillsWhite;
+			}
+			//evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
 			evaluationValue -= 10 * movablePiecesBlack;
-			evaluationValue += 500 * potentialMillsWhite;
+			//evaluationValue += 500 * potentialMillsWhite;
 		}
 		
 		return evaluationValue;
