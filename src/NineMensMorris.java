@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 enum PositionValue {
 	/* Enums to define position states */
-	X('x'), W('W'), B('B');
+	X('X'), W('W'), B('B');
 	char position;
 	
 	PositionValue(char tempPosition) {

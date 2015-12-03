@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.DataInputStream;
+import java.util.Scanner;
 
 /* Utility Class for File I/O */
 public class FileIO {
@@ -14,8 +15,10 @@ public class FileIO {
 			try{
 			
 				System.out.println("\nWhere do you want to place WHITE piece?:");
-				DataInputStream dis = new DataInputStream(System.in);
-				int n = dis.readInt();
+				//DataInputStream dis = new DataInputStream(System.in);
+				Scanner userInput = new Scanner(System.in);
+				String charPosition = userInput.next();
+				int n = Integer.parseInt(charPosition);
 				PositionValue p= obj.getValueAtPosition(n);
 				if (p == PositionValue.X) {
 					obj.setPositionValue(PositionValue.W, n);
@@ -37,8 +40,10 @@ public class FileIO {
 		while (true){
 			try{
 				System.out.println("\nWhich WHITE piece do you want to move?:");
-				DataInputStream dis = new DataInputStream(System.in);
-				int from = dis.readInt();
+				//DataInputStream dis = new DataInputStream(System.in);
+				Scanner userInput = new Scanner(System.in);
+				String charPosition = userInput.next();
+				int from = Integer.parseInt(charPosition);
 				PositionValue p= obj.getValueAtPosition(from);
 				if (p != PositionValue.W) {
 					System.out.println("\nYou do realize there is no WHITE piece there?");
@@ -46,14 +51,20 @@ public class FileIO {
 				}
 				while (true){
 					System.out.println("Where do you want to place your WHITE piece?:");
-					DataInputStream diss = new DataInputStream(System.in);
-					int to = diss.readInt();
+					Scanner userInput2 = new Scanner(System.in);
+					String charPosition2 = userInput.next();
+					//DataInputStream diss = new DataInputStream(System.in);
+					int to = Integer.parseInt(charPosition2);
 					PositionValue p1= obj.getValueAtPosition(to); 
 					if (p1 == PositionValue.X) {
 							obj.setPositionValue(PositionValue.W,to);
 							obj.setPositionValue(PositionValue.X,from);
+							
 							System.out.println("\nWHITE moved...");
-							if (NineMensMorrisLogic.isCloseMill(to, obj)) removePiece(obj);
+							
+							if (NineMensMorrisLogic.isCloseMill(to, obj)){
+								removePiece(obj);
+							}
 							return true;
 					}
 					else {
@@ -74,8 +85,10 @@ public class FileIO {
 		while (true){
 			try{
 				System.out.println("\nWhich BLACK piece do you want to remove?:");
-				DataInputStream dis = new DataInputStream(System.in);
-				int n = dis.readInt();
+				//DataInputStream dis = new DataInputStream(System.in);
+				Scanner userInput = new Scanner(System.in);
+				String charPosition = userInput.next();
+				int n = Integer.parseInt(charPosition);
 				PositionValue p= obj.getValueAtPosition(n);
 				if (p == PositionValue.B && !NineMensMorrisLogic.isCloseMill(n, obj)){
 					obj.setPositionValue(PositionValue.X,n);	

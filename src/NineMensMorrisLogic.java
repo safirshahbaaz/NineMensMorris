@@ -46,7 +46,7 @@ public class NineMensMorrisLogic {
 			case 0  : value = (isMill(c, board, 1, 2)   || isMill(c, board, 3, 5)); break;
 			case 1  : value = (isMill(c, board, 0, 2)   || isMill(c, board, 9, 17)); break;
 			case 2  : value = (isMill(c, board, 0, 1)   || isMill(c, board, 4, 7)); break;
-			case 3  : value = (isMill(c, board, 0, 5)   || isMill(c, board, 11, 9)); break;
+			case 3  : value = (isMill(c, board, 0, 5)   || isMill(c, board, 11, 19)); break;
 			case 4  : value = (isMill(c, board, 2, 7)   || isMill(c, board, 12, 20)); break;
 			case 5  : value = (isMill(c, board, 0, 3)   || isMill(c, board, 6, 7)); break;
 			case 6  : value = (isMill(c, board, 5, 7)   || isMill(c, board, 14, 22)); break;
@@ -312,5 +312,91 @@ public class NineMensMorrisLogic {
 			evaluationValue = (1000 * (numWhitePieces + numPossibleMills - numBlackPieces) - numBlackMoves);
 		}
 		return evaluationValue;	
+	}
+	
+	public static boolean potentialMillInFormation(int location, NineMensMorris board, PositionValue p){
+		boolean value = false;
+		ArrayList<Integer> adjLocations = adjacentLocations(location);
+		
+		for(Integer loc : adjLocations){
+			if (board.getValueAtPosition(loc) == p && !checkMillFormation(location, board, p)){
+				//System.out.println("I entered this");
+				value = true;
+			}	
+		}
+		return value;
+	}
+	
+	public static int getPiecesInPotentialMillFormation(NineMensMorris board, PositionValue p){
+		int count = 0;
+		
+		for(int iter = 0; iter < board.boardPositions.size(); iter++){
+			
+			if(board.getValueAtPosition(iter) == p){
+				
+				/* Get the adjacent locations for the current position */
+				ArrayList<Integer> adjLocations = adjacentLocations(iter);
+				
+				for (Integer loc : adjLocations) {
+					
+					/* Check if there are 2 pieces in adjacent locations but not in a mill */
+					if(p == PositionValue.W){
+						if (board.getValueAtPosition(loc) == PositionValue.B && potentialMillInFormation(loc, board, PositionValue.B)){
+							count++;
+						}
+					}
+					else{
+						if (board.getValueAtPosition(loc) == PositionValue.W && potentialMillInFormation(loc, board, PositionValue.W)){
+							count++;
+						}
+					}
+				}
+			}
+		}
+		return count;
+	}
+	
+	public static int getEvaluationImproved(NineMensMorris board, boolean isOpeningPhase){
+		int evaluationValue = 0;
+		
+		int numWhitePieces = board.getNumberOfPieces(PositionValue.W); 
+		int numBlackPieces = board.getNumberOfPieces(PositionValue.B);
+		
+		int numPossibleMillsWhite = getPossibleMillCount(board, PositionValue.W);
+		int numPossibleMillsBlack = getPossibleMillCount(board, PositionValue.B);
+		
+		int movablePiecesWhite = 0;
+		int movablePiecesBlack = 0;
+		
+		if(!isOpeningPhase){
+			//ArrayList<NineMensMorris> boardListWhite = addPiecesforMidgameAndEndGame(board);
+			ArrayList<NineMensMorris> boardListBlack = addPiecesforMidgameAndEndgameBlack(board);
+			
+			//movablePiecesWhite = boardListWhite.size();
+			movablePiecesBlack = boardListBlack.size();
+		}
+		
+		int potentialMillsWhite = getPiecesInPotentialMillFormation(board, PositionValue.W);
+		int potentialMillsBlack = getPiecesInPotentialMillFormation(board, PositionValue.B);
+		
+		if(numBlackPieces <= 2){
+			evaluationValue = 100000;
+		}
+		/* Game is won if all Black pieces are blocked */
+		else if (movablePiecesBlack == 0){
+			evaluationValue = 100000;
+		}
+		/* Game is lost if number of white pieces is less than 3 */
+		else if(numWhitePieces <= 2){
+			evaluationValue = -100000;
+		}
+		else{
+			evaluationValue = 100 * (numWhitePieces - numBlackPieces);
+			evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
+			evaluationValue -= 10 * movablePiecesBlack;
+			evaluationValue += 500 * potentialMillsWhite;
+		}
+		
+		return evaluationValue;
 	}
 }

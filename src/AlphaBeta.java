@@ -59,7 +59,7 @@ public class AlphaBeta {
 				}
 				/* If Alpha is at least Beta, then pruning condition is satisfied */ 
 				if(alpha >= beta) {
-					System.out.println("Pruning Scenario!");
+					//System.out.println("Pruning Scenario!");
 					break;
 				}
 					
@@ -78,18 +78,18 @@ public class AlphaBeta {
 		else {
 			if(isWhite){
 				if(isOpeningPhase){
-					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationForOpeningPhase(board));
+					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationImproved(board, isOpeningPhase));
 				}
 				else{
-					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationForMidGameAndEndGame(board));
+					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationImproved(board, isOpeningPhase));
 				}
 			}
 			else{
 				if(isOpeningPhase){
-					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationForOpeningPhase(board.getInvertedBoard()));
+					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationImproved(board.getInvertedBoard(), isOpeningPhase));
 				}
 				else{
-					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationForMidGameAndEndGame(board.getInvertedBoard()));
+					finalEvaluation.setEvaluation(NineMensMorrisLogic.getEvaluationImproved(board.getInvertedBoard(), isOpeningPhase));
 				}
 			}
 			
