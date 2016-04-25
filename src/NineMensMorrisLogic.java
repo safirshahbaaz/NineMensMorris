@@ -429,11 +429,11 @@ public class NineMensMorrisLogic {
 				evaluationValue = 100 * (numWhitePieces - numBlackPieces);
 				if(numWhitePieces < 4){
 					evaluationValue += 500 * (numPossibleMillsWhite);
-					evaluationValue += 1000 * potentialMillsWhite;
+					evaluationValue += 1000 * potentialMillsBlack;
 				}
 				else{
 					evaluationValue += 1000 * (numPossibleMillsWhite);
-					evaluationValue += 500 * potentialMillsWhite;
+					evaluationValue += 500 * potentialMillsBlack;
 				}
 				//evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
 				evaluationValue -= 10 * movablePiecesBlack;
@@ -444,11 +444,11 @@ public class NineMensMorrisLogic {
 			evaluationValue = 100 * (numWhitePieces - numBlackPieces);
 			if(numWhitePieces < 4){
 				evaluationValue += 500 * (numPossibleMillsWhite);
-				evaluationValue += 1000 * potentialMillsWhite;
+				evaluationValue += 1000 * potentialMillsBlack;
 			}
 			else{
 				evaluationValue += 1000 * (numPossibleMillsWhite);
-				evaluationValue += 500 * potentialMillsWhite;
+				evaluationValue += 500 * potentialMillsBlack;
 			}
 			//evaluationValue += 600 * (numPossibleMillsWhite); //- numPossibleMillsBlack);
 			evaluationValue -= 10 * movablePiecesBlack;
